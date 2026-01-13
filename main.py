@@ -21,26 +21,35 @@ RIGHT = (1, 0)
 
 
 class GameObject:
+    """Базовый класс для игровых объектов."""
+    
     def __init__(self, position=None, body_color=None):
+        """Инициализирует объект."""
         self.position = position or (0, 0)
         self.body_color = body_color or (255, 255, 255)
     
     def draw(self, surface):
+        """Отрисовывает объект."""
         pass
 
 
 class Apple(GameObject):
+    """Класс яблока."""
+    
     def __init__(self):
+        """Инициализирует яблоко."""
         super().__init__()
         self.body_color = APPLE_COLOR
         self.randomize_position()
     
     def randomize_position(self):
+        """Устанавливает случайную позицию."""
         x = random.randint(0, GRID_WIDTH - 1) * CELL_SIZE
         y = random.randint(0, GRID_HEIGHT - 1) * CELL_SIZE
         self.position = (x, y)
     
     def draw(self, surface):
+        """Отрисовывает яблоко."""
         rect = pygame.Rect(
             self.position[0],
             self.position[1],
@@ -51,12 +60,16 @@ class Apple(GameObject):
 
 
 class Snake(GameObject):
+    """Класс змейки."""
+    
     def __init__(self):
+        """Инициализирует змейку."""
         super().__init__()
         self.body_color = SNAKE_COLOR
         self.reset()
     
     def reset(self):
+        """Сбрасывает змейку в начальное состояние."""
         start_x = (GRID_WIDTH // 2) * CELL_SIZE
         start_y = (GRID_HEIGHT // 2) * CELL_SIZE
         
@@ -66,6 +79,7 @@ class Snake(GameObject):
         self.length = 1
     
     def update_direction(self):
+        """Обновляет направление движения."""
         if self.next_direction:
             opposite = [
                 (UP, DOWN), (DOWN, UP),
@@ -83,6 +97,7 @@ class Snake(GameObject):
             self.next_direction = None
     
     def move(self):
+        """Двигает змейку."""
         head_x, head_y = self.positions[0]
         dir_x, dir_y = self.direction
         
@@ -95,22 +110,27 @@ class Snake(GameObject):
             self.positions.pop()
     
     def get_head_position(self):
+        """Возвращает позицию головы."""
         return self.positions[0]
     
     def grow(self):
+        """Увеличивает длину."""
         self.length += 1
     
     def check_self_collision(self):
+        """Проверяет столкновение с собой."""
         head = self.get_head_position()
         return head in self.positions[1:]
     
     def draw(self, surface):
+        """Отрисовывает змейку."""
         for x, y in self.positions:
             rect = pygame.Rect(x, y, CELL_SIZE, CELL_SIZE)
             pygame.draw.rect(surface, self.body_color, rect)
 
 
 def handle_keys(snake):
+    """Обрабатывает нажатия клавиш."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -127,6 +147,7 @@ def handle_keys(snake):
 
 
 def main():
+    """Основной игровой цикл."""
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Изгиб Питона")
     
